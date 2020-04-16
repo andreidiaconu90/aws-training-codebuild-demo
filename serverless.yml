@@ -24,6 +24,13 @@ provider:
   name: aws
   runtime: nodejs12.x
   region: eu-central-1
+  # iamRoleStatements:
+  #   - Effect: "Allow"
+  #     Action:
+  #      - "secretsmanager:GetSecretValue"
+  #     Resource: "arn:aws:secretsmanager:eu-central-1:763455941045:secret:Github-qVbwnY"
+custom:
+  GitHubAccessToken: ${ssm:/aws/reference/secretsmanager/Github~true}
 
 # you can add CloudFormation resource templates here
 resources:
@@ -31,7 +38,7 @@ resources:
     CodeBuildSourceCredential:
       Type: AWS::CodeBuild::SourceCredential
       Properties:
-        Token: "101a4b062d29d02d13ac4ab89dee67c4bb5b3407"
+        Token: ${self:custom.GitHubAccessToken.GithubAccessToken}
         ServerType: GITHUB
         AuthType: PERSONAL_ACCESS_TOKEN
     CodeBuildProject:
@@ -49,4 +56,9 @@ resources:
         Source:
           Type: GITHUB
           Location: https://github.com/R0fedex/aws-training-codebuild-demo
+        Triggers:
+          Webhook: true
+          FilterGroups:
+            - - Type: EVENT
+                Pattern: PUSH
       DependsOn: CodeBuildSourceCredential
