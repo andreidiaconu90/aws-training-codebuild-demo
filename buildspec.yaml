@@ -11,9 +11,9 @@ phases:
       - npm install
   build:
     commands:
-      - echo Deployment started on `date`
-      - echo Deploying using Serverless Framework
-      - serverless deploy -v -s dev
+      - npm test
+      - serverless deploy --verbose --stage dev
+      - npm run-script integration
   post_build:
     commands:
       - echo Deployment completed on `date`

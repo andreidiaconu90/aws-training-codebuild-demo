@@ -1,24 +1,4 @@
-# Welcome to Serverless!
-#
-# This file is the main config file for your service.
-# It's very minimal at this point and uses default values.
-# You can always add more config options for more control.
-# We've included some commented out config examples here.
-# Just uncomment any of them to get that config option.
-#
-# For full config options, check the docs:
-#    docs.serverless.com
-#
-# Happy Coding!
-
-service: infra-as-code-codebuild-2
-# app and org for use with dashboard.serverless.com
-#app: your-app-name
-#org: your-org-name
-
-# You can pin your service to only deploy with a specific Serverless version
-# Check out our docs for more details
-# frameworkVersion: "=X.X.X"
+service: infra-as-code-codebuild-3
 
 provider:
   name: aws
@@ -29,36 +9,83 @@ provider:
   #     Action:
   #      - "secretsmanager:GetSecretValue"
   #     Resource: "arn:aws:secretsmanager:eu-central-1:763455941045:secret:Github-qVbwnY"
+plugins:
+  - serverless-offline
 custom:
   GitHubAccessToken: ${ssm:/aws/reference/secretsmanager/Github~true}
+
+functions:
+  randomHello:
+    handler: handler.randomHello
+    events:
+      - http:
+          path: randomhello
+          method: get
 
 # you can add CloudFormation resource templates here
 resources:
   Resources:
-    CodeBuildSourceCredential:
-      Type: AWS::CodeBuild::SourceCredential
+    DeploymentArtifactBucket:
+      Type: AWS::S3::Bucket
+      DeletionPolicy: Delete
       Properties:
-        Token: ${self:custom.GitHubAccessToken.GithubAccessToken}
-        ServerType: GITHUB
-        AuthType: PERSONAL_ACCESS_TOKEN
+        AccessControl: Private
+        VersioningConfiguration:
+          # The guide recommends Enabled but I can't see why
+          Status: Suspended
+
+    CodePipelineProject:
+      Type: AWS::CodePipeline::Pipeline
+      Properties:
+        ArtifactStore:
+          Type: S3
+          Location: !Ref DeploymentArtifactBucket
+        RoleArn: arn:aws:iam::763455941045:role/CodeBuild_Serverless_Admin
+        Stages:
+          - Name: Source
+            Actions:
+              - Name: Source
+                ActionTypeId:
+                  Category: Source
+                  Owner: ThirdParty
+                  Provider: GitHub
+                  Version: 1
+                OutputArtifacts:
+                  - Name: MyAppSourceCodeArtifact
+                Configuration:
+                  Owner: R0fedex
+                  Repo: aws-training-codebuild-demo
+                  Branch: master
+                  OAuthToken: ${self:custom.GitHubAccessToken.GithubAccessToken}
+                RunOrder: 1 # The order of this action inside this stage
+          - Name: Build
+            Actions:
+              - Name: Build
+                ActionTypeId:
+                  Category: Build
+                  Owner: AWS
+                  Provider: CodeBuild
+                  Version: 1
+                RunOrder: 1
+                Configuration:
+                  ProjectName: CodeBuildProject
+                InputArtifacts:
+                  - Name: MyAppSourceCodeArtifact
+
     CodeBuildProject:
       Type: AWS::CodeBuild::Project
       Properties:
-        Name: dev-code-build-instance
-        Description: this-is-my-description
+        Name: CodeBuildProject
         ServiceRole: arn:aws:iam::763455941045:role/CodeBuild_Serverless_Admin
         Artifacts:
-          Type: NO_ARTIFACTS
+          Type: CODEPIPELINE
         Environment:
           Type: LINUX_CONTAINER
           ComputeType: BUILD_GENERAL1_SMALL
-          Image: "aws/codebuild/standard:4.0"
+          Image: aws/codebuild/standard:4.0
+          EnvironmentVariables:
+            - Name: BUILD_ARTIFACT_BUCKET
+              Value: !Ref DeploymentArtifactBucket
         Source:
-          Type: GITHUB
-          Location: https://github.com/R0fedex/aws-training-codebuild-demo
-        Triggers:
-          Webhook: true
-          FilterGroups:
-            - - Type: EVENT
-                Pattern: PUSH
-      DependsOn: CodeBuildSourceCredential
+          Type: CODEPIPELINE
+        TimeoutInMinutes: 10

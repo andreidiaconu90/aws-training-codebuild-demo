@@ -1,0 +1,29 @@
+{
+  "name": "sls-cicd",
+  "version": "1.0.0",
+  "description": "",
+  "main": "handler.js",
+  "dependencies": {
+    "eslint": "^6.8.0"
+  },
+  "devDependencies": {
+    "jest": "^25.3.0",
+    "serverless-offline": "^6.1.4",
+    "supertest": "^4.0.2"
+  },
+  "scripts": {
+    "test": "jest __tests__/unit/*",
+    "lint": "eslint */*.js",
+    "integration": "jest __tests__/integration/*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/R0fedex/aws-training-codebuild-demo.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/R0fedex/aws-training-codebuild-demo/issues"
+  },
+  "homepage": "https://github.com/R0fedex/aws-training-codebuild-demo#readme"
+}
