@@ -2,6 +2,7 @@ var stackOutput = require("../../build/stackCreationOutput.json");
 const url = stackOutput.ServiceEndpoint;
 const request = require("supertest")(url);
 
+console.log(`Using ${url} endpoint`);
 describe("/randomHello route", () => {
   it("GET /randomHello returns a message", () => {
     request
