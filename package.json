@@ -4,7 +4,8 @@
   "description": "",
   "main": "handler.js",
   "dependencies": {
-    "eslint": "^6.8.0"
+    "eslint": "^6.8.0",
+    "serverless-stack-output": "^0.2.3"
   },
   "devDependencies": {
     "jest": "^25.3.0",

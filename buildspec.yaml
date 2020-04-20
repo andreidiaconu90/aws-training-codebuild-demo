@@ -11,9 +11,10 @@ phases:
       - npm install
   build:
     commands:
+      - npm run-script lint
       - npm test
       - serverless deploy --verbose --stage dev
       - npm run-script integration
   post_build:
     commands:
-      - echo Deployment completed on `date`
+      - echo Deployment successful

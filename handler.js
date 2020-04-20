@@ -1,7 +1,7 @@
 "use strict";
 const localeService = require("./services/localeService");
 
-module.exports.randomHello = async (event) => {
+module.exports.randomHello = async () => {
   return {
     statusCode: 200,
     body: JSON.stringify({

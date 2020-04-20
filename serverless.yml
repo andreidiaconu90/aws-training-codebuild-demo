@@ -11,8 +11,11 @@ provider:
   #     Resource: "arn:aws:secretsmanager:eu-central-1:763455941045:secret:Github-qVbwnY"
 plugins:
   - serverless-offline
+  - serverless-stack-output
 custom:
   GitHubAccessToken: ${ssm:/aws/reference/secretsmanager/Github~true}
+  output:
+    file: /build/stackCreationOutput.json
 
 functions:
   randomHello:
