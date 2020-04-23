@@ -14,7 +14,7 @@ describe("/randomHello route", () => {
   });
 });
 
-//TODO: add CodePipeline stage in pipeline for linting and unit/integration tests and deploy to staging
-//TODO: passing deployed URL to the integration tests step
+//[Done]//TODO: add Codebuild stage in pipeline for linting and unit/integration tests and deploy to staging
+//[Done]//TODO: passing deployed URL to the integration tests step
 //TODO: add COdePipeline stage for deploying to staging manually!
 //TODO: create roles for CodePipeline and CodeBuild with CloudFormation
