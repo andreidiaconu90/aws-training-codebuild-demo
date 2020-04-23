@@ -13,7 +13,9 @@ plugins:
   - serverless-offline
   - serverless-stack-output
 custom:
-  GitHubAccessToken: ${ssm:/aws/reference/secretsmanager/Github~true}
+  #GitHubAccessToken: ${ssm:/aws/reference/secretsmanager/Github~true} --using AWS Secrets Manager
+  #below using AWS Parameter store
+  GitHubAccessToken: ${ssm:GithubAccessToken:1~true}
   output:
     file: /build/stackCreationOutput.json
 
