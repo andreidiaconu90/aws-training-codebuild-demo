@@ -11,7 +11,7 @@ phases:
       - npm install
   build:
     commands:
-      - serverless deploy --verbose --stage Production
+      - serverless deploy --verbose --stage Prd
   post_build:
     commands:
       - echo Deployment successful

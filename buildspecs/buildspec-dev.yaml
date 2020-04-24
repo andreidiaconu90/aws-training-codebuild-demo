@@ -13,7 +13,7 @@ phases:
     commands:
       # - npm run-script lint we will lint locally using git commit pre-hooks with Husky so we limit the build time = $$
       - npm test
-      - serverless deploy --verbose --stage Development
+      - serverless deploy --verbose --stage Dev
       #- npm run-script integration - we won't be having integration tests in the beginning
   post_build:
     commands:

@@ -1,4 +1,4 @@
-service: infra-as-code-codebuild-3
+service: MyApp
 
 provider:
   name: aws
@@ -48,7 +48,7 @@ resources:
         RoleArn: arn:aws:iam::763455941045:role/CodeBuild_Serverless_Admin
         DisableInboundStageTransitions:
           - Reason: Deployment to production can only be done manually
-            StageName: DeployToProduction
+            StageName: Deploy-to-Production
         Stages:
           - Name: Source
             Actions:
