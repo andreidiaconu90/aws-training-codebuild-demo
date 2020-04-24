@@ -47,7 +47,7 @@ resources:
           Location: !Ref DeploymentArtifactBucket
         RoleArn: arn:aws:iam::763455941045:role/CodeBuild_Serverless_Admin
         DisableInboundStageTransitions:
-          - Reason: Deployment to production can only be done manually
+          - Reason: Manual approval needed for production deployment
             StageName: ManualApproval
         Stages:
           - Name: Source
