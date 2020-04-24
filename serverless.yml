@@ -46,6 +46,9 @@ resources:
           Type: S3
           Location: !Ref DeploymentArtifactBucket
         RoleArn: arn:aws:iam::763455941045:role/CodeBuild_Serverless_Admin
+        DisableInboundStageTransitions:
+          - Reason: Deployment to production can only be done manually
+            StageName: DeployToProduction
         Stages:
           - Name: Source
             Actions:
@@ -61,11 +64,12 @@ resources:
                   Owner: R0fedex
                   Repo: aws-training-codebuild-demo
                   Branch: master
-                  OAuthToken: ${self:custom.GitHubAccessToken.GithubAccessToken}
+                  #OAuthToken: ${ssm:/aws/reference/secretsmanager/Github~true} --using AWS Secrets Manager
+                  OAuthToken: ${ssm:GithubAccessToken~true} #having this in a variable didn't work, but having it inline works?!
                 RunOrder: 1 # The order of this action inside this stage
-          - Name: Build
+          - Name: Deploy-to-Development
             Actions:
-              - Name: Build
+              - Name: Deploy-to-Development
                 ActionTypeId:
                   Category: Build
                   Owner: AWS
@@ -73,14 +77,27 @@ resources:
                   Version: 1
                 RunOrder: 1
                 Configuration:
-                  ProjectName: CodeBuildProject
+                  ProjectName: TestAndDeployToDev
+                InputArtifacts:
+                  - Name: MyAppSourceCodeArtifact
+          - Name: Deploy-to-Production
+            Actions:
+              - Name: Deploy-to-Production
+                ActionTypeId:
+                  Category: Build
+                  Owner: AWS
+                  Provider: CodeBuild
+                  Version: 1
+                RunOrder: 1
+                Configuration:
+                  ProjectName: DeployToProduction
                 InputArtifacts:
                   - Name: MyAppSourceCodeArtifact
 
-    CodeBuildProject:
+    TestAndDeployToDev:
       Type: AWS::CodeBuild::Project
       Properties:
-        Name: CodeBuildProject
+        Name: TestAndDeployToDev
         ServiceRole: arn:aws:iam::763455941045:role/CodeBuild_Serverless_Admin
         Artifacts:
           Type: CODEPIPELINE
@@ -93,4 +110,24 @@ resources:
               Value: !Ref DeploymentArtifactBucket
         Source:
           Type: CODEPIPELINE
+          BuildSpec: "buildspecs/buildspec-dev.yaml"
+        TimeoutInMinutes: 10
+
+    DeployToProduction:
+      Type: AWS::CodeBuild::Project
+      Properties:
+        Name: DeployToProduction
+        ServiceRole: arn:aws:iam::763455941045:role/CodeBuild_Serverless_Admin
+        Artifacts:
+          Type: CODEPIPELINE
+        Environment:
+          Type: LINUX_CONTAINER
+          ComputeType: BUILD_GENERAL1_SMALL
+          Image: aws/codebuild/standard:4.0
+          EnvironmentVariables:
+            - Name: BUILD_ARTIFACT_BUCKET
+              Value: !Ref DeploymentArtifactBucket
+        Source:
+          Type: CODEPIPELINE
+          BuildSpec: "buildspecs/buildspec-prod.yml"
         TimeoutInMinutes: 10

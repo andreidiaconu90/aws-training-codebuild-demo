@@ -1,0 +1,20 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - echo Installing Serverless...
+      - npm install -g serverless
+  pre_build:
+    commands:
+      - echo Installing NPM dependencies...
+      - npm install
+  build:
+    commands:
+      # - npm run-script lint we will lint locally using git commit pre-hooks with Husky so we limit the build time = $$
+      - npm test
+      - serverless deploy --verbose --stage Development
+      #- npm run-script integration - we won't be having integration tests in the beginning
+  post_build:
+    commands:
+      - echo Deployment successful
