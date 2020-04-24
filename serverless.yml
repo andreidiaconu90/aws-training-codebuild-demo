@@ -46,9 +46,9 @@ resources:
           Type: S3
           Location: !Ref DeploymentArtifactBucket
         RoleArn: arn:aws:iam::763455941045:role/CodeBuild_Serverless_Admin
-        # DisableInboundStageTransitions:
-        #   - Reason: Deployment to production can only be done manually
-        #     StageName: Production
+        DisableInboundStageTransitions:
+          - Reason: Deployment to production can only be done manually
+            StageName: ManualApproval
         Stages:
           - Name: Source
             Actions:
@@ -82,7 +82,7 @@ resources:
                   - Name: MyAppSourceCodeArtifact
           - Name: ManualApproval
             Actions:
-              - Name: Deploy-to-Production
+              - Name: Manual-Approval
                 ActionTypeId:
                   Category: Approval
                   Owner: AWS
