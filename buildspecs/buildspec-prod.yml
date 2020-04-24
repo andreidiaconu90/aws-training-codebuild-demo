@@ -3,8 +3,8 @@ version: 0.2
 phases:
   install:
     commands:
-      # - echo Installing Serverless...
-      # - npm install -g serverless
+      - echo Installing Serverless...
+      - npm install -g serverless
   pre_build:
     commands:
       - echo Installing NPM dependencies...
