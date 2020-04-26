@@ -4,11 +4,6 @@ provider:
   name: aws
   runtime: nodejs12.x
   region: eu-central-1
-  # iamRoleStatements:
-  #   - Effect: "Allow"
-  #     Action:
-  #      - "secretsmanager:GetSecretValue"
-  #     Resource: "arn:aws:secretsmanager:eu-central-1:763455941045:secret:Github-qVbwnY"
 plugins:
   - serverless-offline
   - serverless-stack-output
