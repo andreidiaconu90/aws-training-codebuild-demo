@@ -97,13 +97,7 @@ Resources:
             Value: !Ref DeploymentArtifactBucket
       Source:
         Type: CODEPIPELINE
-        BuildSpec: !Sub |
-          version: 0.2
-          phases:
-            build:
-              commands:
-                - npm test
-                - bash deploy.sh
+        BuildSpec: "buildspecs/buildspec-dev.yaml"
       TimeoutInMinutes: 10
   DeployToProduction:
     Type: AWS::CodeBuild::Project
@@ -123,10 +117,5 @@ Resources:
             Value: !Ref DeploymentArtifactBucket
       Source:
         Type: CODEPIPELINE
-        BuildSpec: !Sub |
-          version: 0.2
-          phases:
-            build:
-              commands:
-                - bash deploy.sh
+        BuildSpec: "buildspecs/buildspec-prd.yaml"
       TimeoutInMinutes: 10
