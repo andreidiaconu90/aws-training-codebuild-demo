@@ -6,7 +6,7 @@ provider:
   region: eu-central-1
 plugins:
   - serverless-offline
-  - serverless-stack-output
+  #- serverless-stack-output
 functions:
   randomHello:
     handler: handler.randomHello
