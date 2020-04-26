@@ -56,8 +56,6 @@ Resources:
                 ProjectName: TestAndDeployToDev
               InputArtifacts:
                 - Name: MyAppSourceCodeArtifact
-              OutputArtifacts:
-                - Name: serverless-ci-cd-dev-output
         - Name: ManualApproval
           Actions:
             - Name: Manual-Approval
@@ -78,7 +76,7 @@ Resources:
               Configuration:
                 ProjectName: DeployToProduction
               InputArtifacts:
-                - Name: serverless-ci-cd-dev-output
+                - Name: MyAppSourceCodeArtifact
   TestAndDeployToDev:
     Type: AWS::CodeBuild::Project
     Properties:
