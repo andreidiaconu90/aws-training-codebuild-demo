@@ -1,18 +1,19 @@
-version: 0.2
+# version: 0.2
 
-phases:
-  install:
-    commands:
-      - echo Installing Serverless...
-      - npm install -g serverless
-  pre_build:
-    commands:
-      - echo Installing NPM dependencies...
-      - npm install
-  build:
-    commands:
-      - serverless package --stage Prd
-      - serverless deploy --package .serverless --verbose --stage Prd
-  post_build:
-    commands:
-      - echo Deployment successful
+# phases:
+#   install:
+#     commands:
+#       - echo Installing Serverless...
+#       - npm install -g serverless
+#   pre_build:
+#     commands:
+#       - echo Installing NPM dependencies...
+#       - npm install
+#   build:
+#     commands:
+#       # - serverless package --stage Prd
+#       - serverless deploy --package .serverless --verbose --stage Prd
+#       - serverless deploy function --func
+#   post_build:
+#     commands:
+#       - echo Deployment successful

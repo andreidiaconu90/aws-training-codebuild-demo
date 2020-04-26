@@ -11,10 +11,22 @@ phases:
       - npm install
   build:
     commands:
-      # - npm run-script lint we will lint locally using git commit pre-hooks with Husky so we limit the build time = $$
       - npm test
-      - serverless deploy --verbose --stage Dev
-      #- npm run-script integration - we won't be having integration tests in the beginning
+      # create directory for deployment packages
+      - mkdir artifacts
+      # create staging deployment package
+      - mkdir artifacts/stg
+      - serverless package --package artifacts/dev --stage Dev --verbose
+      # create production deployment package
+      - mkdir artifacts/prd
+      - serverless package --package artifacts/prod --stage Prd --verbose
   post_build:
     commands:
       - echo Deployment successful
+
+  #tell CodeBuild to save the artifacts directory as a build artifact, so it can be used by later stages in our pipeline
+  artifacts:
+    files:
+      - artifacts /**/* # tells CodeBuild to save anything in our artifacts directory or its subdirectories
+      - serverless.yml
+      - deploy.sh #  deployment script
